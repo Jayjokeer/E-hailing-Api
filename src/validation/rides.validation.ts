@@ -11,10 +11,6 @@ export const validateRideCreation = (req: Request, res: Response, next: NextFunc
       'string.empty': 'Destination cannot be empty',
       'string.base': 'Destination must be a string'
     }),
-    userId: Joi.string().required().messages({
-      'string.empty': 'User ID cannot be empty',
-      'string.base': 'User ID must be a string'
-    })
   });
 
   const { error } = rideValidation.validate(req.body, { abortEarly: false });

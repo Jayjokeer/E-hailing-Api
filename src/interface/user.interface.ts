@@ -9,8 +9,6 @@ export interface IUser {
     password: string;
     longitude: number;
     latitude: number;
-    createdAt: Date;
-    updatedAt: Date;
     vehicle: string;
     plateNumber: string;
     color: string;

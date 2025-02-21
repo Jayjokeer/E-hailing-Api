@@ -11,8 +11,11 @@ const userSchema: Schema = new mongoose.Schema(
     mobile: {type: String},
     status: {type: String, enum: UserStatus, default: UserStatus.active}, 
     longitude: {type: Number},
-    latitude: {type: Number}
-
+    latitude: {type: Number},
+    isAvailable: {type: Boolean, default: true},
+    vehicle: {type: String},
+    plateNumber: {type: String},
+    color: {type: String},
   },
   { timestamps: true }
 
