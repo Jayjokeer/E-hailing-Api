@@ -10,7 +10,11 @@ const RideSchema: Schema = new mongoose.Schema(
     status: { type: String, enum: RidesStatus, default: RidesStatus.pending },
     driverId: { type: Schema.Types.ObjectId, ref: 'Users' },
     rideDate: { type: Date, default: Date.now },
-    fare: { type: Number }
+    fare: { type: Number },
+    pickupLatitude: { type: Number, required: true },
+    pickupLongitude: { type: Number, required: true },
+    destinationLatitude: { type: Number, required: true },
+    destinationLongitude: { type: Number, required: true },
   });
   
   export default mongoose.model<IRide>('Ride', RideSchema);

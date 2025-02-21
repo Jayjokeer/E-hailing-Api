@@ -11,6 +11,23 @@ export const validateRideCreation = (req: Request, res: Response, next: NextFunc
       'string.empty': 'Destination cannot be empty',
       'string.base': 'Destination must be a string'
     }),
+     pickupLatitude: Joi.number().required().messages({
+        'number.base': 'Pickup latitude must be a number',
+        'any.required': 'Pickup latitude is required'
+      }),
+      pickupLongitude: Joi.number().required().messages({
+        'number.base': 'Pickup longitude must be a number',
+        'any.required': 'Pickup longitude is required'
+      }),
+  
+      destinationLatitude: Joi.number().required().messages({
+        'number.base': 'Destination latitude must be a number',
+        'any.required': 'Destination latitude is required'
+      }),
+      destinationLongitude: Joi.number().required().messages({
+        'number.base': 'Destination longitude must be a number',
+        'any.required': 'Destination longitude is required'
+      }),
   });
 
   const { error } = rideValidation.validate(req.body, { abortEarly: false });
