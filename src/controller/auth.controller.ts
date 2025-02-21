@@ -16,6 +16,10 @@ export const registerUserController = catchAsync( async (req: Request, res: Resp
       mobile,
       longitude,
       latitude,
+      role,
+      vehicle,
+      color,
+      plateNumber
     } = req.body;
 
     const isEmailExists = await authService.checkEmailExists(email);
@@ -28,7 +32,13 @@ export const registerUserController = catchAsync( async (req: Request, res: Resp
       lastName,
       email: email.toLowerCase(),
       password: encryptPwd,
-      mobile
+      mobile,
+      longitude,
+      latitude,
+      role,
+      vehicle,
+      color,
+      plateNumber
     }
     const user = await authService.createUser(userPayload);
 
