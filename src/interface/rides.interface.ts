@@ -8,4 +8,4 @@ export interface IRide extends Document {
     driverId?: string;
     rideDate: Date;
     fare?: number;
-  }
+  };

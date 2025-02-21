@@ -13,5 +13,5 @@ const RideSchema: Schema = new mongoose.Schema(
     fare: { type: Number }
   });
   
-  const Ride = mongoose.model<IRide>('Ride', RideSchema);
+  export default mongoose.model<IRide>('Ride', RideSchema);
   
