@@ -13,13 +13,21 @@ export const createRideController = catchAsync( async (req: JwtPayload, res: Res
     const {
       pickup, 
       destination, 
+      pickupLatitude,
+      pickupLongitude,
+      destinationLatitude,
+      destinationLongitude,
     } = req.body;
 
     const userId = req.user._id;
     const ridePayload= {
       pickup, 
       destination, 
-      userId 
+      userId,
+      pickupLatitude,
+      pickupLongitude,
+      destinationLatitude,
+      destinationLongitude,
     }
     const ride = await rideService.createRides(ridePayload);
 
@@ -74,6 +82,7 @@ export const acceptRideController = catchAsync( async (req:JwtPayload, res: Resp
         throw new BadRequestError("You can only accept a pending ride")
       }
       ride.status = RidesStatus.accepted;
+      ride.driverId = req.user._id;
       await ride.save();
        successResponse(res, StatusCodes.OK, ride);
     } catch (error) {
