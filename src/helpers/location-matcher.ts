@@ -11,9 +11,7 @@ function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
     return R * c;
   }
   
-  /**
-   * Matches a rider with the nearest available driver.
-   */
+
   export const matchRiderWithDriver = async(riderLocation: { latitude: number; longitude: number }): Promise<{ driverId: string; distance: number } | null> =>{
     const drivers = await Driver.find({ isAvailable: true });
     let nearestDriver = null;
