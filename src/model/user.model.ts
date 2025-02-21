@@ -4,10 +4,10 @@ import { IUser } from '../interface/user.interface';
 
 const userSchema: Schema = new mongoose.Schema(
   {
-    firstName: { type: String},
+    firstName: { type: String ,required: true},
     lastName: { type: String},
     email: { type: String, required: true, unique: true },
-    password: { type: String },
+    password: { type: String , required: true},
     mobile: {type: String},
     status: {type: String, enum: UserStatus, default: UserStatus.active}, 
     longitude: {type: Number},

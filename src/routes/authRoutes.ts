@@ -6,7 +6,7 @@ import { validateLogin, validateRegistration } from "../validation/auth.validati
 const router = Router();
 
 router.route("/").get((req: Request, res: Response) => {
-  res.json({ message: "Welcome to RavenPay" });
+  res.json({ message: "Welcome to E-Hailing API" });
 });
 //unprotected routes
 router.route("/sign-up").post(validateRegistration,authController.registerUserController);
