@@ -14,27 +14,10 @@ export const generateJWTwithExpiryDate = (
   return userJWT;
 };
 
-export const verifyRiderJWT = (token: string) => {
+export const verifyJWT = (token: string) => {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as IUser;
-    if(payload.role !== UserRole.rider){
-      throw new ForbiddenError("Access denied!")
-    }
-    return payload;
-  } catch (err) {
-    if (err instanceof jwt.TokenExpiredError) {
-      throw new BadRequestError("Kindly log in!");
-    } else {
-      throw new BadRequestError("This token is invalid");
-    }
-  }
-};
-export const verifyDriverJWT = (token: string) => {
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as IUser;
-    if(payload.role !== UserRole.driver){
-      throw new ForbiddenError("Access denied!")
-    }
+
     return payload;
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
