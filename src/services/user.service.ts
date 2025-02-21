@@ -8,6 +8,6 @@ export const createUser = async (userPayload: any) => {
 return Users.create(userPayload);
 };
 
-export const fetchUserById = async (id: number)=>{
+export const fetchUserById = async (id: string)=>{
   return await Users.findById(id, {password: 0});
 };

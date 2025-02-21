@@ -13,4 +13,5 @@ export interface IUser {
     plateNumber: string;
     color: string;
     role: UserRole;
+    isAvailable: boolean;
 }

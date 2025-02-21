@@ -33,23 +33,8 @@ export const validateRideCreation = (req: Request, res: Response, next: NextFunc
   const { error } = rideValidation.validate(req.body, { abortEarly: false });
   if (error) {
     const errorMessages = error.details.map((detail) => detail.message);
-    return res.status(400).json({ errors: errorMessages });
-  }
-  next();
-};
-
-export const validateRideAccept = (req: Request, res: Response, next: NextFunction) => {
-  const rideAcceptValidation = Joi.object({
-    driverId: Joi.string().required().messages({
-      'string.empty': 'Driver ID is required to accept a ride',
-      'string.base': 'Driver ID must be a string'
-    })
-  });
-
-  const { error } = rideAcceptValidation.validate(req.body, { abortEarly: false });
-  if (error) {
-    const errorMessages = error.details.map((detail) => detail.message);
-    return res.status(400).json({ errors: errorMessages });
+     res.status(400).json({ errors: errorMessages });
+     return;
   }
   next();
 };
@@ -69,7 +54,8 @@ export const validateMatchRequest = (req: Request, res: Response, next: NextFunc
   const { error } = matchValidation.validate(req.body, { abortEarly: false });
   if (error) {
     const errorMessages = error.details.map((detail) => detail.message);
-    return res.status(400).json({ errors: errorMessages });
+     res.status(400).json({ errors: errorMessages });
+     return;
   }
   next();
 };
