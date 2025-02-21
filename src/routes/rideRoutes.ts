@@ -13,6 +13,7 @@ router.route("/:id/accept").patch(driverAuth, rideController.acceptRideControlle
 router.route("/:id/complete").patch(driverAuth, rideController.completeRideController);
 router.route("/:id/cancel").patch(riderAuth, rideController.cancelRideController);
 router.route("/match").post(riderAuth,validateMatchRequest, rideController.matchRideController);
+router.route("/users-rides").get(riderAuth, rideController.fetchUserRidesController);
 
 
 export { router as RideRoute };

@@ -13,3 +13,10 @@ export const fetchAllRides = async()=>{
     return await Ride.find({status: RidesStatus.pending});
 };
 
+export const fetchUserRides = async(page: number, limit: number, userId: string)=>{
+    const skip = (page -1) * limit;
+
+    const rides =  Ride.find({userId}).skip(skip).limit(limit).sort({ rideDate: -1 });
+    const totalRides = Ride.countDocuments({userId});
+    return {rides , totalRides  }
+}

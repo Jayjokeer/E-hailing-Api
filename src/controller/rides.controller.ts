@@ -140,3 +140,24 @@ export const acceptRideController = catchAsync( async (req:JwtPayload, res: Resp
       throw new BadRequestError('Internal server error');
     }
   });
+  export const fetchUserRidesController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
+    try {
+      const userId = req.user._id;
+      const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
+  
+      const {rides, totalRides} = await rideService.fetchUserRides(page, limit, userId);
+  
+      const data = {
+        page,
+        limit,
+        totalRides,
+        rides,
+      };
+      successResponse(res, StatusCodes.OK,  data);
+
+    } catch (error) {
+      console.error('Error during fetching user rides:', error);
+      throw new BadRequestError('Internal server error');
+    }
+  });
