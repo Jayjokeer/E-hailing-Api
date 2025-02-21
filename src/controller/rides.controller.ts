@@ -57,7 +57,49 @@ export const fetchRidesController = catchAsync( async (req: Request, res: Respon
       await ride.save();
        successResponse(res, StatusCodes.OK, ride);
     } catch (error) {
-      console.error('Error during fetching available rides:', error);
+      console.error('Error during cancel ride:', error);
+      throw new BadRequestError('Internal server error');
+    }
+  });
+
+export const acceptRideController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
+    try {
+      const {id} = req.params;
+      const ride = await rideService.fetchRideById(id);
+      if(!ride){
+        throw new NotFoundError("Ride not found")
+      };
+
+      if(ride.status !== RidesStatus.pending){
+        throw new BadRequestError("You can only accept a pending ride")
+      }
+      ride.status = RidesStatus.accepted;
+      await ride.save();
+       successResponse(res, StatusCodes.OK, ride);
+    } catch (error) {
+      console.error('Error during accepting ride:', error);
+      throw new BadRequestError('Internal server error');
+    }
+  });
+  export const completeRideController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
+    try {
+      const {id} = req.params;
+      const ride = await rideService.fetchRideById(id);
+      if(!ride){
+        throw new NotFoundError("Ride not found")
+      };
+      if(String(ride.driverId) !== String(req.user._id)){
+        throw new BadRequestError("You can only complete your ride")
+      };      
+      
+      if(ride.status !== RidesStatus.accepted){
+        throw new BadRequestError("You can only accept a complete a ride you accepted")
+      }
+      ride.status = RidesStatus.completed;
+      await ride.save();
+       successResponse(res, StatusCodes.OK, ride);
+    } catch (error) {
+      console.error('Error during accepting ride:', error);
       throw new BadRequestError('Internal server error');
     }
   });
