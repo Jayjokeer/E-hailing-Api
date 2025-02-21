@@ -2,12 +2,11 @@ import { StatusCodes } from "http-status-codes";
 import { BadRequestError, NotFoundError } from "../errors/error";
 import { catchAsync } from "../errors/error-handler";
 import { successResponse } from "../helpers/success-response";
-import { comparePassword, hashPassword } from "../utils/encryption";
 import { NextFunction, Request, Response } from "express";
-import { generateJWTwithExpiryDate } from "../utils/jwt";
 import * as authService from "../services/user.service";
 import * as rideService from "../services/rides.service";
 import { JwtPayload } from "jsonwebtoken";
+import { RidesStatus } from "../enum/rides.enum";
 
 export const createRideController = catchAsync( async (req: JwtPayload, res: Response) => {
    try{
@@ -38,6 +37,27 @@ export const fetchRidesController = catchAsync( async (req: Request, res: Respon
        successResponse(res, StatusCodes.OK, rides);
     } catch (error) {
       console.error('Error during fetching available rides:', error);
-      throw new BadRequestError('Internal server error')
-      ;}
+      throw new BadRequestError('Internal server error');
+    }
+  });
+  export const cancelRideController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
+    try {
+      const {id} = req.params;
+      const ride = await rideService.fetchRideById(id);
+      if(!ride){
+        throw new NotFoundError("Ride not found")
+      };
+      if(String(ride.userId) !== String(req.user._id)){
+        throw new BadRequestError("You can only cancel your ride")
+      };
+      if(ride.status === RidesStatus.completed){
+        throw new BadRequestError("You cannot cancel a completed ride")
+      }
+      ride.status = RidesStatus.canceled;
+      await ride.save();
+       successResponse(res, StatusCodes.OK, ride);
+    } catch (error) {
+      console.error('Error during fetching available rides:', error);
+      throw new BadRequestError('Internal server error');
+    }
   });
