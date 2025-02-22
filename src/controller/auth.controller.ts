@@ -6,8 +6,8 @@ import { comparePassword, hashPassword } from "../utils/encryption";
 import { NextFunction, Request, Response } from "express";
 import { generateJWTwithExpiryDate } from "../utils/jwt";
 import * as authService from "../services/user.service";
+import { ILoggedInUser } from "../interface/user.interface";
 export const registerUserController = catchAsync( async (req: Request, res: Response) => {
-   try{
     const {
       firstName,
       lastName,
@@ -44,31 +44,28 @@ export const registerUserController = catchAsync( async (req: Request, res: Resp
 
       const data = user;
       return successResponse(res,StatusCodes.CREATED, data);
-    }catch(error){
-        console.error('Error during user registration:', error);
-        throw new BadRequestError("Internal server error");
-    }
+
 });
 
-export const loginController = catchAsync( async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body;
+export const loginController = catchAsync( async (req: Request, res: Response) => {
+  const { email, password } = req.body;
 
-    try {
       const user = await authService.checkEmailExists(email);
       if (!user) {
         throw new NotFoundError('User not found');
       }
-  
+      
       const isPasswordValid = await comparePassword(password, user.password);
       if (!isPasswordValid) {
         throw new BadRequestError('Invalid email or password');
       }
+      const jwtPayload: ILoggedInUser= {
+        id: user._id,
+        email: user.email,
+        role: user.role
+      }
+      const token =  generateJWTwithExpiryDate(jwtPayload);
   
-      const token =  generateJWTwithExpiryDate(user);
-  
-       successResponse(res, StatusCodes.OK, token);
-    } catch (error) {
-      console.error('Error during login:', error);
-      throw new BadRequestError('Internal server error')
-      ;}
+      return successResponse(res, StatusCodes.OK, token);
+
   });

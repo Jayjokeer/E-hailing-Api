@@ -5,5 +5,5 @@ export enum UserStatus {
 
   export enum UserRole {
     rider = "rider",
-    driver = "driver ",
+    driver = "driver",
   };

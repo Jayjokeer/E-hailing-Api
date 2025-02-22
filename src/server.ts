@@ -11,10 +11,11 @@ const app = express();
 app.use(express.json());
 
 app.use('/api/v1', routes);
-app.use(globalErrorHandler); 
 app.all('*', async (req, res, next) => {
     next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404)); 
   });
+app.use(globalErrorHandler); 
+
   app.listen(PORT, async () => {
     try {
       await connectDB();

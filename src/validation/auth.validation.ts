@@ -25,13 +25,20 @@ export const validateRegistration = (req: Request, res: Response, next: NextFunc
         'string.empty': 'Email cannot be empty',
         'string.base': 'Email must be a string',
       }),      
-      longitude: Joi.string().required().messages({
+      longitude: Joi.number().required().messages({
         'number.empty': 'Email cannot be empty',
         'number.base': 'Email must be a string',
       }),      
-      latitude: Joi.string().required().messages({
+      latitude: Joi.number().required().messages({
         'number.empty': 'latitude cannot be empty',
         'number.base': 'latitude must be a number',
+      }),
+      role: Joi.string()
+      .valid(...Object.values(UserRole)) 
+      .required()
+      .messages({
+        'any.only': 'Invalid role, must be one of: ' + Object.values(UserRole).join(', '),
+        'any.required': 'Role is required',
       }),
       vehicle: Joi.string().when('role', {
         is: UserRole.driver,

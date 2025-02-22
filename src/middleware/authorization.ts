@@ -12,31 +12,24 @@ export const riderAuth = async (req: JwtPayload, res: Response, next: NextFuncti
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
-  
     if (!token) {
       throw new UnauthorizedError("Kindly login to access this route");
     }
   
     try {
       const decode = verifyJWT(token);
-      if (!decode || !decode.email) {
+      if (!decode) {
         throw new UnauthorizedError("Authentication Failure");
       }
-  
-      const user = await await authService.checkEmailExists(decode.email.toLowerCase());
-      
-      if (!user) {
-        throw new UnauthorizedError("No user found");
-      }
-      if(user.role !== UserRole.rider){
+
+      if(decode.role !== UserRole.rider){
         throw new ForbiddenError("Access denied!")
       }
-      req.user = user;
+      req.user = decode;
       next();
       
     } catch (error) {
-      console.error("Auth Error:", error);
-      throw new UnauthorizedError("Kindly login to access this route");      
+      next(error);
     }
   };
   export const driverAuth = async (req: JwtPayload, res: Response, next: NextFunction): Promise<void> => {
@@ -52,23 +45,17 @@ export const riderAuth = async (req: JwtPayload, res: Response, next: NextFuncti
   
     try {
       const decode = verifyJWT(token);
-      if (!decode || !decode.email) {
+      if (!decode ) {
         throw new UnauthorizedError("Authentication Failure");
       }
-  
-      const user = await await authService.checkEmailExists(decode.email.toLowerCase());
-      
-      if (!user) {
-        throw new UnauthorizedError("No user found");
-      }
-      if(user.role !== UserRole.driver){
+
+      if(decode.role !== UserRole.driver){
         throw new ForbiddenError("Access denied!")
       }
-      req.user = user;
+      req.user = decode;
       next();
       
     } catch (error) {
-      console.error("Auth Error:", error);
-      throw new UnauthorizedError("Kindly login to access this route");      
+      next(error);
     }
   };

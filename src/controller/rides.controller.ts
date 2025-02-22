@@ -10,7 +10,6 @@ import { RidesStatus } from "../enum/rides.enum";
 import { matchRiderWithDriver } from "../helpers/location-matcher";
 
 export const createRideController = catchAsync( async (req: JwtPayload, res: Response) => {
-   try{
     const {
       pickup, 
       destination, 
@@ -20,7 +19,7 @@ export const createRideController = catchAsync( async (req: JwtPayload, res: Res
       destinationLongitude,
     } = req.body;
 
-    const userId = req.user._id;
+    const userId = req.user.id;
     const ridePayload= {
       pickup, 
       destination, 
@@ -34,29 +33,21 @@ export const createRideController = catchAsync( async (req: JwtPayload, res: Res
 
       const data = ride;
       return successResponse(res,StatusCodes.CREATED, data);
-    }catch(error){
-        console.error('Error during ride creation:', error);
-        throw new BadRequestError("Internal server error");
-    }
+
 });
 
-export const fetchRidesController = catchAsync( async (req: Request, res: Response): Promise<void> => {
-    try {
+export const fetchRidesController = catchAsync( async (req: Request, res: Response) => {
      const rides = await rideService.fetchAllRides();
-       successResponse(res, StatusCodes.OK, rides);
-    } catch (error) {
-      console.error('Error during fetching available rides:', error);
-      throw new BadRequestError('Internal server error');
-    }
+      return successResponse(res, StatusCodes.OK, rides);
+
   });
-  export const cancelRideController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
-    try {
+  export const cancelRideController = catchAsync( async (req:JwtPayload, res: Response) => {
       const {id} = req.params;
       const ride = await rideService.fetchRideById(id);
       if(!ride){
         throw new NotFoundError("Ride not found")
       };
-      if(String(ride.userId) !== String(req.user._id)){
+      if(String(ride.userId) !== String(req.user.id)){
         throw new BadRequestError("You can only cancel your ride")
       };
       if(ride.status === RidesStatus.completed){
@@ -65,14 +56,9 @@ export const fetchRidesController = catchAsync( async (req: Request, res: Respon
       ride.status = RidesStatus.canceled;
       await ride.save();
        successResponse(res, StatusCodes.OK, ride);
-    } catch (error) {
-      console.error('Error during cancel ride:', error);
-      throw new BadRequestError('Internal server error');
-    }
   });
 
-export const acceptRideController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
-    try {
+export const acceptRideController = catchAsync( async (req:JwtPayload, res: Response) => {
       const {id} = req.params;
       const ride = await rideService.fetchRideById(id);
       if(!ride){
@@ -84,36 +70,31 @@ export const acceptRideController = catchAsync( async (req:JwtPayload, res: Resp
       if(ride.status !== RidesStatus.pending){
         throw new BadRequestError("You can only accept a pending ride")
       };
-      const driver = await userService.fetchUserById(req.user._id);
+      const driver = await userService.fetchUserById(req.user.id);
       if(!driver){
         throw new NotFoundError("Driver not found");
       }
       ride.status = RidesStatus.accepted;
-      ride.driverId = req.user._id;
+      ride.driverId = req.user.id;
       driver.isAvailable = false;
       await ride.save();
       await driver.save();
-       successResponse(res, StatusCodes.OK, ride);
-    } catch (error) {
-      console.error('Error during accepting ride:', error);
-      throw new BadRequestError('Internal server error');
-    }
+      return successResponse(res, StatusCodes.OK, ride);
   });
-  export const completeRideController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
-    try {
+  export const completeRideController = catchAsync( async (req:JwtPayload, res: Response) => {
       const {id} = req.params;
       const ride = await rideService.fetchRideById(id);
       if(!ride){
         throw new NotFoundError("Ride not found")
       };
-      if(String(ride.driverId) !== String(req.user._id)){
+      if(String(ride.driverId) !== String(req.user.id)){
         throw new BadRequestError("You can only complete your ride")
       };      
       
       if(ride.status !== RidesStatus.accepted){
         throw new BadRequestError("You can only accept a complete a ride you accepted")
       }
-      const driver = await userService.fetchUserById(req.user._id);
+      const driver = await userService.fetchUserById(req.user.id);
       if(!driver){
         throw new NotFoundError("Driver not found");
       }
@@ -123,26 +104,18 @@ export const acceptRideController = catchAsync( async (req:JwtPayload, res: Resp
       await ride.save();
       await driver.save();
 
-       successResponse(res, StatusCodes.OK, ride);
-    } catch (error) {
-      console.error('Error during completing ride:', error);
-      throw new BadRequestError('Internal server error');
-    }
+      return successResponse(res, StatusCodes.OK, ride);
+
   });
-  export const matchRideController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
-    try {
+  export const matchRideController = catchAsync( async (req:JwtPayload, res: Response) => {
       const { latitude, longitude } = req.body;
       const riderLocation = { latitude: Number(latitude), longitude: Number(longitude) };
       const driver = await matchRiderWithDriver(riderLocation);
-       successResponse(res, StatusCodes.OK,  driver);
-    } catch (error) {
-      console.error('Error during matching ride:', error);
-      throw new BadRequestError('Internal server error');
-    }
+      return successResponse(res, StatusCodes.OK,  driver);
+ 
   });
-  export const fetchUserRidesController = catchAsync( async (req:JwtPayload, res: Response): Promise<void> => {
-    try {
-      const userId = req.user._id;
+  export const fetchUserRidesController = catchAsync( async (req:JwtPayload, res: Response) => {
+      const userId = req.user.id;
       const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
   
@@ -154,10 +127,5 @@ export const acceptRideController = catchAsync( async (req:JwtPayload, res: Resp
         totalRides,
         rides,
       };
-      successResponse(res, StatusCodes.OK,  data);
-
-    } catch (error) {
-      console.error('Error during fetching user rides:', error);
-      throw new BadRequestError('Internal server error');
-    }
+    return  successResponse(res, StatusCodes.OK,  data);
   });

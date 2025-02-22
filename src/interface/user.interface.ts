@@ -1,6 +1,8 @@
+import { ObjectId } from "mongoose";
 import { UserRole, UserStatus } from "../enum/user.enum";
 
 export interface IUser {
+    _id: any;
     firstName: string;
     lastName: string;
     email: string;
@@ -14,4 +16,9 @@ export interface IUser {
     color: string;
     role: UserRole;
     isAvailable: boolean;
+}
+export interface ILoggedInUser {
+    id: any;
+    email: string;
+    role: UserRole;
 }

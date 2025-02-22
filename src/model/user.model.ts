@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { UserStatus } from '../enum/user.enum';
+import { UserRole, UserStatus } from '../enum/user.enum';
 import { IUser } from '../interface/user.interface';
 
 const userSchema: Schema = new mongoose.Schema(
@@ -16,6 +16,7 @@ const userSchema: Schema = new mongoose.Schema(
     vehicle: {type: String},
     plateNumber: {type: String},
     color: {type: String},
+    role: {type: String, enum: UserRole}
   },
   { timestamps: true }
 
