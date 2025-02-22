@@ -16,7 +16,7 @@ export const fetchAllRides = async()=>{
 export const fetchUserRides = async(page: number, limit: number, userId: string)=>{
     const skip = (page -1) * limit;
 
-    const rides =  Ride.find({userId}).skip(skip).limit(limit).sort({ rideDate: -1 });
-    const totalRides = Ride.countDocuments({userId});
+    const rides =  await Ride.find({userId: userId}).skip(skip).limit(limit).sort({ createdAt: -1 });
+    const totalRides =await  Ride.countDocuments({userId: userId});
     return {rides , totalRides  }
 }
