@@ -13,9 +13,7 @@ The **E-hailing API** is a robust backend service designed to power ride-hailing
 - [Running the API](#running-the-api)
 - [API Endpoints](#api-endpoints)
 - [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+
 
 ---
 
